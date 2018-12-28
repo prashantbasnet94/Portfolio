@@ -1,0 +1,11 @@
+
+body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
+.w3-row-padding img {margin-bottom: 12px}
+.bgimg {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url('https://wonderfulengineering.com/wp-content/uploads/2013/06/steve-jobs_1920x1080_91956.jpg');
+  min-height: 100%;
+}
+ 

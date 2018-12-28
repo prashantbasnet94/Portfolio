@@ -1,0 +1,17 @@
+{
+  "name": "chat-example",
+  "version": "0.0.0",
+  "description": "A chat example to showcase how to use `socket.io` with a static `express` server with `async` for control flow.",
+  "main": "server.js",
+  "repository": "",
+  "author": "Mostafa Eweda <mo.eweda@gmail.com>",
+  "dependencies": {
+    "async": "~0.2.8",
+    "ejs": "^2.6.1",
+    "express": "^3.21.2",
+    "fs": "0.0.1-security",
+    "multer": "^1.4.1",
+    "path": "^0.12.7",
+    "socket.io": "~0.9.14"
+  }
+}
