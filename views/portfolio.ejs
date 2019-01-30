@@ -46,34 +46,49 @@
 
 <div>
      <center> <h2>Upload the image you want to upload in portfolio section </h2></center> 
-  <form id="container" action="/upload" method="POST" enctype="multipart/form-data">
-     
-  <input  name ="myImage"type="file" name="pic" accept="image/*">
+ 
+  
+  <form id="container" action="/uploadPortfolio" method="POST" >
+  <label for="fname">Portfolio Field</label>
+  <input type="text" id="field" name="field" placeholder="Your achievement field..">
+  
   <input type="submit">
   </form>
 </div>
 
-  <!-- Portfolio Section -->
+<!-- Portfolio Section -->
   <div class="w3-padding-32 w3-content" id="portfolio">
     <h2 class="w3-text-grey">My Portfolio</h2>
     <hr class="w3-opacity">
 
-    <!-- Grid for photos -->
-    <div class="w3-row-padding" style="margin:0 -16px">
+      <div class="w3-row-padding" style="margin:0 -16px">
       <div class="w3-half">
         
-      <% for(var a=0;a<parseInt(portfolioName.length/2);a++){  console.log(portfolioName.length/2)%>
-      
-       <a href="/webdevelopment"> <img src="images/<%=portfolioName[a]%>" style="width:100%; " ></a>
-      <% }%>
-       
+        
+        
+         
+        
+        
+        
+          
+        <% portType.forEach(function(portType){ %>
+         <img src="images/display.png" style="width:100%; " > 
+        <%=portType.name%>
+        
+        <% })%>
+
        </div>
 
       <div class="w3-half">
-         <% for(var a=parseInt(portfolioName.length/2);a<portfolioName.length;a++){console.log(portfolioName[a]) %>
-      <a href="/webdevelopment"> <img src="images/<%=portfolioName[a]%>" style="width:100%; " ></a>
-        <% }%>
-      </div>
+          
+        
+        <% portType.forEach(function(portType){ %>
+        
+        <div class="portImage"></div>
+        <%=portType.name%>
+        
+        <% })%>
+        
     <!-- End photo grid -->
     </div>
   <!-- End Portfolio Section -->

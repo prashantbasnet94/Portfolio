@@ -1,0 +1,46 @@
+<% include partials/header %>
+
+<h3><center>Choose any of the following to edit</center></h3>
+
+
+  <!-- Portfolio Section -->
+  <div class="w3-padding-32 w3-content" id="portfolio">
+    <h2 class="w3-text-grey"> <center>Portfolio Edit</center></h2>
+    <hr class="w3-opacity">
+
+    <!-- Grid for photos -->
+    <div class="container" style="margin:0 -16px">
+               <div class="row">
+        
+        
+   <% dataName.forEach(function(firstPort1){ %>
+              <div class="col-md-6 portfolio">
+                <div >
+                  <a href="portfolio/<%=firstPort1.name%>/create/<%=firstPort1.id%>"><p class ="portfolio_text">  <%=  firstPort1.name %> </p>
+                   <img class="picture_portfolio" src="images/display.png" > 
+                  </a> 
+                </div>
+               
+              </div>
+
+        
+        <% })%>
+                
+   
+        
+                
+      </div>
+    <!-- End photo grid -->
+    </div>
+  <!-- End Portfolio Section -->
+  </div>
+
+
+
+
+
+
+
+
+
+< include partials/footer %>

@@ -1,0 +1,61 @@
+      <% firstPort.forEach(function(firstPort1){ %>
+              <div class="col">
+                <div class="portfolio">  <%=  firstPort1 %> </div> 
+                  <img  src="images/display.png" style="width:100%; " > 
+              </div>
+
+        
+        <% })%>
+
+       </div>
+
+      <div class="w3-half">
+          
+        <% secondPort.forEach(function(secondPort){ %>
+                  <div class="portfolio"> <center><%=  secondPort %></center>  </div> 
+                  <img  src="images/display.png" style="width:100%; " > 
+
+        
+        <% })%>
+     
+     
+     
+     <tr >
+    <td>  <p class="w3-wide">           <img class="skills" src="images/Java.png" >  </p>  </td>
+    <td> <p class="w3-wide"><img class="skills" src="images/spring.png" ></p></td>
+    <td><p class="w3-wide"><img class="skills" src="images/security.png" ></p></td>
+    <td> <p class="w3-wide"><img class="skills" src="images/mvc.png" ></p></td>
+  </tr>
+  
+  
+  
+  <tr>
+    <td><p class="w3-wide">C#</p></td>
+    <td> <p class="w3-wide">Hibernate</p></td>
+    <td><p class="w3-wide">Android Studio</p></td>
+    <td> <p class="w3-wide">HQL</p></td>
+  </tr>
+  
+  <tr>
+    <td><p class="w3-wide">Blockchain</p></td>
+    <td> <p class="w3-wide">Solidity</p></td>
+    <td><p class="w3-wide">Truffle</p></td>
+    <td> <p class="w3-wide">Html, CSS, DOM, jQuery</p></td>
+  </tr>
+  
+   <tr>
+    <td><p class="w3-wide">JavaScript</p></td>
+    <td> <p class="w3-wide">Node.js</p></td>
+    <td><p class="w3-wide">Express Studio</p></td>
+    <td> <p class="w3-wide">MongoDb</p></td>
+  </tr>
+  
+  <tr>
+    <td><p class="w3-wide">Ethical Hacking</p></td>
+    <td> <p class="w3-wide">Project management</p></td>
+    <td><p class="w3-wide">SQL</p></td>
+    <td> <p class="w3-wide">RESTful WebServices</p></td>
+  </tr>
+   
+    
+   
