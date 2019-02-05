@@ -1,8 +1,9 @@
 var express= require("express");
 var app= express();
-var multer= require("multer");
+ 
 var methodOverride =require("method-override");
 app.set("view engine","ejs");
+ var multer= require("multer");
 var path=require('path');
  var fs = require('fs');
  var mongoose =require("mongoose");
@@ -70,6 +71,21 @@ app.post("/aboutMe",function(req,res){
 
 
 
+ 
+var fileName1;
+//set storage engine
+var storage = multer.diskStorage({
+    destination: './public/images/portfolioFieldTypeSkills',
+    filename:function(req,file,cb){
+        cb(null, fileName1=file.fieldname+'-'+Date.now()+path.extname(file.originalname));
+    }
+});
+
+//initialize the upload variable
+
+var upload=multer({
+    storage:storage
+}).single('myImage');
 
 
 
@@ -244,27 +260,6 @@ app.get("/portfolio/:id",function(req, res) {
     })
 })
 
-
- 
-var fileName1;
-//set storage engine
-var storage = multer.diskStorage({
-    destination: './public/images/portfolioFieldTypeSkills',
-    filename:function(req,file,cb){
-        cb(null, fileName1=file.fieldname+'-'+Date.now()+path.extname(file.originalname));
-    }
-});
-
-//initialize the upload variable
-
-var upload=multer({
-    storage:storage
-}).single('myImage');
-
- 
- 
-
-
  
     
 
@@ -361,7 +356,7 @@ app.post('/uploadPortfolio',function(req,res){
  
 
 //rendering a page where you can edit portfoliofieltype or insert new projects in the field
-app.get("/a",function(req, res) {
+app.get("/PortfolioEditSection",function(req, res) {
     PortfolioType.find({},function(err, portType) {
         if(err){
             console.log(err)
@@ -474,6 +469,100 @@ app.delete("/read/delete/:id",function(req,res){
     })
   
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+var github = require('octonode');
+
+// Then we instantiate a client with or without a token (as show in a later section)
+
+ 
+ 
+
+ 
+
+var client = github.client({
+  username: 'prashantbasnet94',
+  
+});
+ 
+
+var ghrepo         = client.repo('prashantbasnet94/portfolio');
+ 
+client.get('/user', {}, function (err, status, body, headers) {
+  console.log(body); //json object
+});
+
+ 
+ 
+*/
+ 
+
+
+
+
 
 
 app.listen(process.env.PORT,process.env.IP,function(){
