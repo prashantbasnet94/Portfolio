@@ -1,26 +1,102 @@
-var express= require("express");
-var app= express();
- 
-var methodOverride =require("method-override");
-app.set("view engine","ejs");
- var multer= require("multer");
-var path=require('path');
- var fs = require('fs');
- var mongoose =require("mongoose");
-var expressFileUpload = require("express-fileupload");
+var     express                   =      require("express"),
+        app                       =      express(),
+        methodOverride            =      require("method-override"),
+        multer                    =      require("multer"),
+        path                      =      require('path'),
+        fs                        =      require('fs'),
+        mongoose                  =      require("mongoose"),
+        passportLocalMongoose     =      require("passport-local-mongoose"),
+        passport                  =      require("passport"),
+        localStrategy             =      require("passport-local"),
+        bodyParser                =      require("body-parser"),
+        User                      =     require("./models/User");
+        
+        
 
-var bodyParser = require("body-parser");
+
+
+
 app.use(methodOverride("_method"));
 app.use(bodyParser.urlencoded({extended: true}));
-
-mongoose.connect("mongodb://localhost:27017/portfolio")
-
-
+app.set("view engine","ejs");
+mongoose.connect("mongodb://localhost:27017/portfolio");
 app.use(express.static("public"));
 
+app.use(require("express-session")({
+    secret:"prashant basnet",
+    resave:false,
+    saveUninitialized:false
+}))
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new localStrategy(User.authenticate()));
+
+
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 //gets all the images name in images dir
 var files = fs.readdirSync('public/images/skills');
+
+
+
+app.get("/register",function(req, res) {
+    
+   
+
+    res.render("Register.ejs")
+    
+    
+})
+
+app.post("/register",function(req, res) {
+     console.log(req.body.username);
+    console.log(req.body.password);
+    
+    
+    User.register(new User({username:req.body.username}),req.body.password,function(err,user){
+        if(err){
+           return res.render("Register.ej")
+        }
+            passport.authenticate("local")(req,res,function(){
+                res.redirect("/portfolioUpload");
+            })
+        
+    })
+    
+});
+
+
+app.get("/login",function(req,res){
+    res.render("Login.ejs");
+});
+
+
+app.post("/login",passport.authenticate("local",{
+    successRedirect:"/portfolioUpload",
+    failureRedirect:"/register"
+}),function(req,res){
+    
+});
+
+ app.get("/logout",function(req, res) {
+     req.logout();
+     res.redirect("/");
+ })
+
+
+
+function isLoggedIn(req,res,next){
+    if(req.isAuthenticated()){
+        return next();
+    }
+    res.redirect("/login")
+}
+
+
+
 var portfolioName =files;
 
 
@@ -218,7 +294,7 @@ app.get("/",function(req,res){
 }) ;
 
 
-app.get ("/portfolioUpload",function(req,res){
+app.get ("/portfolioUpload", isLoggedIn,function(req,res){
     
          PortfolioType.find({},function(err,portType){
              if(err){
@@ -266,7 +342,7 @@ app.get("/portfolio/:id",function(req, res) {
 
 //portfolio files are submitted here like webdevelopment graphics desgin etc
 
-app.post('/:title/create/uploadText',function(req,res){
+app.post('/:title/create/uploadText', isLoggedIn,function(req,res){
     
      
     PortfolioTypeDetail.create({
@@ -292,7 +368,7 @@ app.post('/:title/create/uploadText',function(req,res){
 
 
 
-app.post('/:title/create/uploadImage',function(req,res){
+app.post('/:title/create/uploadImage', isLoggedIn,function(req,res){
     
   
                  
@@ -331,7 +407,7 @@ app.post('/:title/create/uploadImage',function(req,res){
 
 
 
-app.post('/uploadPortfolio',function(req,res){
+app.post('/uploadPortfolio', isLoggedIn,function(req,res){
     
     
   
@@ -356,7 +432,7 @@ app.post('/uploadPortfolio',function(req,res){
  
 
 //rendering a page where you can edit portfoliofieltype or insert new projects in the field
-app.get("/PortfolioEditSection",function(req, res) {
+app.get("/PortfolioEditSection", isLoggedIn,function(req, res) {
     PortfolioType.find({},function(err, portType) {
         if(err){
             console.log(err)
@@ -385,7 +461,7 @@ app.get("/PortfolioEditSection",function(req, res) {
 
 
 
-app.get("/portfolio/:title/create/:id",function(req, res) {
+app.get("/portfolio/:title/create/:id", isLoggedIn,function(req, res) {
     
     
     
@@ -413,7 +489,7 @@ var form =mongoose.Schema({
 var Form =mongoose.model("Form",form);
 
 
-app.post("/form",function(req,res){
+app.post("/form", isLoggedIn,function(req,res){
   
     Form.create({
     name:req.body.name,
@@ -435,7 +511,7 @@ app.post("/form",function(req,res){
 
  
 
-app.get("/message",function(req, res) {
+app.get("/message", isLoggedIn,function(req, res) {
     
     Form.find({},function(err,data){
         if(err){
@@ -449,7 +525,7 @@ app.get("/message",function(req, res) {
     
 })
 
-app.get("/read/:id",function(req, res) {
+app.get("/read/:id", isLoggedIn,function(req, res) {
     Form.findById(req.params.id,function(err,found){
         if(err){
             res.redirect("/message")
@@ -459,7 +535,7 @@ app.get("/read/:id",function(req, res) {
     })
 })
 
-app.delete("/read/delete/:id",function(req,res){
+app.delete("/read/delete/:id", isLoggedIn,function(req,res){
     Form.findByIdAndRemove(req.params.id,function(err){
         if(err){
             console.log(err);
@@ -469,21 +545,6 @@ app.delete("/read/delete/:id",function(req,res){
     })
   
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -558,6 +619,11 @@ client.get('/user', {}, function (err, status, body, headers) {
  
  
 */
+
+app.get("/*",function(req, res) {
+    res.redirect("/");
+})
+
  
 
 
