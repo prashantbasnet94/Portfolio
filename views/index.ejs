@@ -15,10 +15,11 @@
     <i class="fa fa-remove"></i>
   </a>
   <div class="w3-bar-block w3-center">
-    <a href="#" class="w3-bar-item w3-button w3-text-grey w3-hover-black" onclick="closeNav()">Home</a>
+    <a href="/dashboard" class="w3-bar-item w3-button w3-text-grey w3-hover-black" onclick="closeNav()">Dashboard</a>
     <a href="#portfolio" class="w3-bar-item w3-button w3-text-grey w3-hover-black" onclick="closeNav()">Portfolio</a>
     <a href="#about" class="w3-bar-item w3-button w3-text-grey w3-hover-black" onclick="closeNav()">About</a>
     <a href="#contact" class="w3-bar-item w3-button w3-text-grey w3-hover-black" onclick="closeNav()">Contact</a>
+  <%if(req.user){%>  <a href="/logout" class="w3-bar-item w3-button w3-text-grey w3-hover-black" >Logout</a><%}%>
   </div>
 </nav>
 
@@ -79,11 +80,11 @@
 
   <!-- About Section -->
   <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="about">
-    <h2>About</h2>
+    <h2>About Me</h2>
     <hr class="w3-opacity">
     <p>
      </p>
-    <h3 class="w3-padding-16"><center><p>My Skills</center></p></h3>
+    <h3 class="w3-padding-16"> <p>My Skills </p></h3>
   
   
   

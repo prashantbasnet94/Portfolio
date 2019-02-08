@@ -1,9 +1,9 @@
 <%include partials/header%>
+   <body style="background-image:url('http://4.bp.blogspot.com/-ckNQzDUbFzM/U4bf9CpGnLI/AAAAAAAANXQ/Le4D3tYr0AM/s1600/moon+hd+wallpaper+1.jpg');" >
 
 
-<h2><center><%=PortfolioFieldType.name%></center></h2>
+<h2 style="color:white;"><center><%=PortfolioFieldType.name%></center></h2>
 
-   
 
 <div class="container">
  <form  id="form1" action="/<%=PortfolioFieldType.name%>/create/uploadText" method="POST" >
@@ -11,16 +11,17 @@
   
       <label for="fname">Project Name</label>
    
-      <input type="text" id="projectName" name="projectName" placeholder="Project Name ..">
+      <input type="text" id="field" name="projectName" placeholder="Project Name ..">
    
-      <label for="picture">Picture</label>
+   <label for="Github link">Repo Link</label>
    
+      <input type="text" id="field" name="repo" placeholder="Github repo">
    
  
    <p>
       <label for="subject">Subject</label>
    
-      <textarea id="disciption" name="disciption" placeholder="Write something.." style="height:200px"></textarea>
+      <textarea type="text" id="field" name="disciption" placeholder="Write something.." style="height:200px"></textarea>
    
   </p>
     
@@ -42,6 +43,7 @@
    
 </div>
  
+ </div>
  
  <script>
   function submitForm(){

@@ -38,7 +38,61 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 //gets all the images name in images dir
-var files = fs.readdirSync('public/images/skills');
+
+
+
+
+
+var destinyVar;
+var storage ;
+var fileName1;
+  var upload;
+     
+
+
+
+//set storage engine
+ storage= multer.diskStorage({
+    destination: './public/images/portfolioFieldTypeSkills',
+    filename:function(req,file,cb){
+        cb(null, fileName1=file.fieldname+'-'+Date.now()+path.extname(file.originalname));
+     //   console.log(destinyVar);
+    }
+});
+
+
+//set storage engine
+ var storageSkill= multer.diskStorage({
+    destination: './public/images/skills',
+    filename:function(req,file,cb){
+        cb(null, file.fieldname+'-'+Date.now()+path.extname(file.originalname));
+     //   console.log(destinyVar);
+    }
+});
+
+ 
+
+
+//initialize the upload variable
+function destiny(){
+    
+    
+    if(arguments[0]==='createProject'){
+         upload=multer({
+   
+         storage:storage
+    }).single('myImage');
+
+        
+    }else if(arguments[0]==='skills'){
+         upload=multer({
+   
+         storage:storageSkill
+    }).single('myImage');
+
+    }
+  
+}
 
 
 
@@ -46,7 +100,7 @@ app.get("/register",function(req, res) {
     
    
 
-    res.render("Register.ejs")
+    res.render("Register.ejs",{req:req})
     
     
 })
@@ -70,7 +124,7 @@ app.post("/register",function(req, res) {
 
 
 app.get("/login",function(req,res){
-    res.render("Login.ejs");
+    res.render("Login.ejs",{req:req});
 });
 
 
@@ -95,10 +149,7 @@ function isLoggedIn(req,res,next){
     res.redirect("/login")
 }
 
-
-
-var portfolioName =files;
-
+ 
 
   var portfolioType = new mongoose.Schema({
         name: String
@@ -113,6 +164,7 @@ var portfolioTypeDetail= mongoose.Schema({
     title:String,
     projectName:String,
     disciption:String,
+    repo:String,
     image:String
 })
 
@@ -140,58 +192,30 @@ app.post("/aboutMe",function(req,res){
     //console.log(req.body.aboutMe);
     about=req.body.aboutMe;
     
-    res.render("index.ejs",{aboutMe:about,portfolioName:portfolioName})
+    res.render("index.ejs",{aboutMe:about,portfolioName:fs.readdirSync('public/images/skills')})
       
     
 })
 
 
 
- 
-var fileName1;
-//set storage engine
-var storage = multer.diskStorage({
-    destination: './public/images/portfolioFieldTypeSkills',
-    filename:function(req,file,cb){
-        cb(null, fileName1=file.fieldname+'-'+Date.now()+path.extname(file.originalname));
-    }
-});
-
-//initialize the upload variable
-
-var upload=multer({
-    storage:storage
-}).single('myImage');
 
 
 
 
-app.get("/try",function(req, res) {
-    res.render("a.ejs");
-})
+
+
+
+
+
+
+
+
 
 
 
 
  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 var aboutMe=new mongoose.Schema({
     
     details: String
@@ -235,73 +259,36 @@ var aboutMe=new mongoose.Schema({
 // })
 
 
-
+var fileName;
 app.get("/",function(req,res){ 
-    
-    
-   // console.log(files)
-    /*var aboutM;
-    About.find({about},function(err,aboutMe){
-        if(err){
-            console.log(err);
-        }else{
-            console.log('===========================')
-          
-            aboutM=aboutMe;
-              console.log(aboutM)
-        }
-    })
-         res.render("index.ejs",{})*/
-         
-        
-         
-         
-         
-         PortfolioType.find({},function(err,portType){
+     PortfolioType.find({},function(err,portType){
              if(err){
                  console.log(err);
              }else{ 
-                 
                  var firstPort=[],secondPort=[];
                   var dataName=[];
-                                //  console.log('length'+portType.length);
-                                  
                 for(var a=0;a<portType.length;a++){
                   dataName.push(portType[a]);
-                  // console.log(dataName)
-               
-                    /*if(a%2===0){
-                      
-                       firstPort.push( portType[a].name);
-                    }else if(a%2===1){
-                        
-                         
-                        secondPort.push(portType[a].name);
-                        
-                    }*/
-                    
-                };
-                              res.render("index.ejs",{dataName:dataName,fileName:files});
-
-                
-/*               res.render("index.ejs",{firstPort:firstPort,secondPort:secondPort})
-*/
+                 
+                  };
+                   
+                    fileName=fs.readdirSync('public/images/skills');
+                   //giving the name of files inside image/skills
+                   res.render("index.ejs",{dataName:dataName,fileName:fileName,req:req})
              }
          })
-         
-         
-
 }) ;
 
 
-app.get ("/portfolioUpload", isLoggedIn,function(req,res){
+//render dashboard file for portfolio to edit 
+app.get ("/dashboard", isLoggedIn,function(req,res){
     
          PortfolioType.find({},function(err,portType){
              if(err){
                  console.log(err);
                  
              }else{ 
-                 res.render("portfolio.ejs",{portType:portType})
+                 res.render("portfolio.ejs",{portType:portType,req:req})
 
              }
          })
@@ -340,7 +327,7 @@ app.get("/portfolio/:id",function(req, res) {
     
 
 
-//portfolio files are submitted here like webdevelopment graphics desgin etc
+//portfolio project files are submitted here like webdevelopment graphics desgin etc
 
 app.post('/:title/create/uploadText', isLoggedIn,function(req,res){
     
@@ -349,6 +336,7 @@ app.post('/:title/create/uploadText', isLoggedIn,function(req,res){
         title:req.params.title,
         projectName:req.body.projectName,
         disciption:req.body.disciption,
+        repo:req.body.repo,
         image:fileName1
     },function(err, form) {
             if(err){
@@ -367,11 +355,10 @@ app.post('/:title/create/uploadText', isLoggedIn,function(req,res){
 
 
 
-
 app.post('/:title/create/uploadImage', isLoggedIn,function(req,res){
     
   
-                 
+            destiny('createProject')
                  
                  upload(req,res,(err)=>{
                         if(err){
@@ -384,8 +371,21 @@ app.post('/:title/create/uploadImage', isLoggedIn,function(req,res){
 });
 
 
-
  
+app.post("/skills/uploadImage",function(req, res) {
+    
+  destiny('skills');
+    
+   
+    upload(req,res,(err)=>{
+                        if(err){
+                            console.log("error found")
+                        }else{
+                           
+                           res.redirect("/portfolioUpload");
+                        }
+                    })  
+})
 
 
 
@@ -393,7 +393,6 @@ app.post('/:title/create/uploadImage', isLoggedIn,function(req,res){
 
 
 
- 
 
 
 
@@ -401,12 +400,7 @@ app.post('/:title/create/uploadImage', isLoggedIn,function(req,res){
 
 
 
-
-
-
-
-
-
+//WebDevelopment,Blockchain development are submitted here
 app.post('/uploadPortfolio', isLoggedIn,function(req,res){
     
     
@@ -469,7 +463,7 @@ app.get("/portfolio/:title/create/:id", isLoggedIn,function(req, res) {
         if(err){
             console.log(err)
         }else{
-            res.render("PortfolioFieldTypeEdit2.ejs",{PortfolioFieldType:PortfolioFieldType})
+            res.render("PortfolioFieldTypeEdit2.ejs",{PortfolioFieldType:PortfolioFieldType,req:req})
         }
     })
   
@@ -489,7 +483,7 @@ var form =mongoose.Schema({
 var Form =mongoose.model("Form",form);
 
 
-app.post("/form", isLoggedIn,function(req,res){
+app.post("/form",function(req,res){
   
     Form.create({
     name:req.body.name,
@@ -519,7 +513,7 @@ app.get("/message", isLoggedIn,function(req, res) {
         }else{
             
           //  console.log(data);
-            res.render("read.ejs",{data:data});
+            res.render("read.ejs",{data:data,req:req});
         }
     })
     
@@ -530,7 +524,7 @@ app.get("/read/:id", isLoggedIn,function(req, res) {
         if(err){
             res.redirect("/message")
         }else{
-           res.render("show.ejs",{found:found})
+           res.render("show.ejs",{found:found,req:req})
 ;        }
     })
 })
@@ -547,78 +541,6 @@ app.delete("/read/delete/:id", isLoggedIn,function(req,res){
 })
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-var github = require('octonode');
-
-// Then we instantiate a client with or without a token (as show in a later section)
-
- 
- 
-
- 
-
-var client = github.client({
-  username: 'prashantbasnet94',
-  
-});
- 
-
-var ghrepo         = client.repo('prashantbasnet94/portfolio');
- 
-client.get('/user', {}, function (err, status, body, headers) {
-  console.log(body); //json object
-});
-
- 
- 
-*/
 
 app.get("/*",function(req, res) {
     res.redirect("/");
