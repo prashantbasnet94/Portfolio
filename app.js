@@ -12,14 +12,18 @@ var     express                   =      require("express"),
         User                      =     require("./models/User");
         
         
+var quote = require('fetch-quote');
 
-
-
+ 
 
 app.use(methodOverride("_method"));
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine","ejs");
-mongoose.connect("mongodb://localhost:27017/portfolio");
+
+
+//mongoose.connect("mongodb://localhost:27017/portfolio");
+mongoose.connect("mongodb+srv://prashantbasnet:prashantbasnet94@portfolio-aejnr.mongodb.net/test?retryWrites=true");
+//mongodb+srv://prashantbasnet94:<PASSWORD>@portfolio-aejnr.mongodb.net/test?retryWrites=true
 app.use(express.static("public"));
 
 app.use(require("express-session")({
@@ -70,6 +74,16 @@ var fileName1;
     }
 });
 
+
+//set storage engine
+ var storageUpdate= multer.diskStorage({
+    destination: './public/images/portfolioFieldTypeSkills',
+    filename:function(req,file,cb){
+        cb(null, file.fieldname+'-'+Date.now()+path.extname(file.originalname));
+     //   console.log(destinyVar);
+    }
+});
+
  
 
 
@@ -90,12 +104,18 @@ function destiny(){
          storage:storageSkill
     }).single('myImage');
 
+    }else if(arguments[0]==='updateProject'){
+         upload=multer({
+   
+         storage:storageSkill
+    }).single('myImage');
+
     }
   
 }
 
 
-
+/*
 app.get("/register",function(req, res) {
     
    
@@ -122,7 +142,7 @@ app.post("/register",function(req, res) {
     
 });
 
-
+*/
 app.get("/login",function(req,res){
     res.render("Login.ejs",{req:req});
 });
@@ -196,16 +216,6 @@ app.post("/aboutMe",function(req,res){
       
     
 })
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -297,6 +307,36 @@ app.get ("/dashboard", isLoggedIn,function(req,res){
 
 app.get("/portfolio/:id",function(req, res) {
     
+   // var datas;
+    
+            PortfolioTypeDetail.find({},function(err, data) {
+        if(err){
+            console.log(err);
+        }else{
+           
+    PortfolioType.findById(req.params.id,function(err, portfolioFieldType) {
+        if(err){
+            console.log(err);
+        }else{
+            
+            //Gives Everything in the database From Respective 
+             
+            console.log(portfolioFieldType);
+            res.render("PortfolioFieldType",{PortfolioFieldType:portfolioFieldType,data:data})
+        }
+        
+    })
+        }
+    })
+    
+    
+    
+})
+
+
+
+app.get("/portfolio/Edit/:id",function(req, res) {
+    
     var datas;
     
             PortfolioTypeDetail.find({},function(err, data) {
@@ -328,7 +368,6 @@ app.get("/portfolio/:id",function(req, res) {
 
 
 //portfolio project files are submitted here like webdevelopment graphics desgin etc
-
 app.post('/:title/create/uploadText', isLoggedIn,function(req,res){
     
      
@@ -355,6 +394,54 @@ app.post('/:title/create/uploadText', isLoggedIn,function(req,res){
 
 
 
+//portfolio project files are updated on edit here like webdevelopment graphics desgin etc
+app.put('/:title/update/updatedText/:id', isLoggedIn,function(req,res){
+    
+     
+    PortfolioTypeDetail.findByIdAndUpdate(
+        req.params.id,req.body.data,function(err, updatedData) {
+            if(err){
+                console.log(err)
+            }else{
+             
+              
+              res.redirect("/")
+            }
+        })
+        
+       
+
+    
+     
+});
+
+
+//portfolio project files are deleted on edit here like webdevelopment graphics desgin etc
+app.delete('/project/delete/:id', isLoggedIn,function(req,res){
+    
+    
+     
+     
+    PortfolioTypeDetail.findByIdAndRemove(
+        req.params.id,function(err) {
+            if(err){
+                console.log(err)
+            }else{
+             
+              
+              res.redirect("/")
+            }
+        })
+        
+       
+
+    
+     
+});
+
+
+
+
 app.post('/:title/create/uploadImage', isLoggedIn,function(req,res){
     
   
@@ -369,6 +456,36 @@ app.post('/:title/create/uploadImage', isLoggedIn,function(req,res){
                     })  
                     
 });
+
+/*
+
+app.put('/:title/update/uploadImage/:id', isLoggedIn,function(req,res){
+    
+    
+     PortfolioTypeDetail.findByIdAndUpdate(
+        req.params.id,req.body.data,function(err, updatedData) {
+            if(err){
+                console.log(err)
+            }else{
+             
+              
+              res.redirect("/")
+            }
+        })
+  
+            destiny('updateProject')
+                 
+                 upload(req,res,(err)=>{
+                        if(err){
+                            console.log("error found")
+                        }else{
+                           
+                        }
+                    })  
+                    
+});
+*/
+
 
 
  
@@ -452,6 +569,29 @@ app.get("/PortfolioEditSection", isLoggedIn,function(req, res) {
 
 
 
+app.get("/portfolio/:title/edit/:id", isLoggedIn,function(req, res) {
+    
+    
+    
+            PortfolioTypeDetail.find({},function(err, data) {
+        if(err){
+            console.log(err);
+        }else{
+           PortfolioType.findById(req.params.id,function(err,PortfolioFieldType){
+        if(err){
+            console.log(err)
+        }else{
+            //will render the projects inside the portfoliofield in dashboard
+            res.render("PortfolioFieldTypeEdit.ejs",{PortfolioFieldType:PortfolioFieldType,req:req,data:data})
+        }
+    })
+  
+        }
+    })
+    
+   
+})
+
 
 
 
@@ -459,11 +599,12 @@ app.get("/portfolio/:title/create/:id", isLoggedIn,function(req, res) {
     
     
     
+    
     PortfolioType.findById(req.params.id,function(err,PortfolioFieldType){
         if(err){
             console.log(err)
         }else{
-            res.render("PortfolioFieldTypeEdit2.ejs",{PortfolioFieldType:PortfolioFieldType,req:req})
+            res.render("PortfolioFieldTypeCreate.ejs",{PortfolioFieldType:PortfolioFieldType,req:req})
         }
     })
   
@@ -540,11 +681,75 @@ app.delete("/read/delete/:id", isLoggedIn,function(req,res){
   
 })
 
+app.get("/quote",function(req, res) {
+    var Gquote;
+    quote.get('funny', function (err, result) {
+
+    if (err) {
+        console.log(err);
+
+    }
+    if (result) {
+Gquote=result;
+        //console.log(result.quote );  // the quote content
+}});
+
+res.send(Gquote.quote);
+    
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//for editing
+app.get("/portfolio/projectEdit/:id",function(req, res) {
+    
+    
+    //console.log(req.params.id);
+     //sends data
+    var datas;
+    
+    
+            PortfolioTypeDetail.findById(req.params.id,function(err, data) {
+        if(err){
+            console.log(err);
+        }else{
+            datas=data;
+             console.log(data);
+              res.render("PortfolioFieldTypeProjectEdit.ejs",{data:data});
+        }
+    })
+    
+   
+    
+    
+   
+    
+    
+})
+
+
+
+
 
 
 app.get("/*",function(req, res) {
     res.redirect("/");
 })
+
+
+
 
  
 
@@ -556,4 +761,4 @@ app.get("/*",function(req, res) {
 app.listen(process.env.PORT,process.env.IP,function(){
     console.log("Starting server");
 })
- 
+// app.listen(3000);
